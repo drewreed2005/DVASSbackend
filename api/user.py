@@ -19,31 +19,17 @@ class UserAPI:
             
             ''' Avoid garbage in, error checking '''
             # validate name
-            name = body.get('name')
-            if name is None or len(name) < 2:
-                return {'message': f'Name is missing, or is less than 2 characters'}, 400
+            username = body.get('username')
+            if username is None or len(username) < 1:
+                return {'message': f'Username is missing, or is less than a character'}, 400
             # validate uid
-            uid = body.get('uid')
-            if uid is None or len(uid) < 2:
-                return {'message': f'User ID is missing, or is less than 2 characters'}, 400
-            # look for password and dob
-            password = body.get('password')
-            dob = body.get('dob')
+            streak = body.get('streak')
+            if streak is None or streak < 1:
+                return {'message': f'Streak is missing, or is less than 1'}, 400
 
             ''' #1: Key code block, setup USER OBJECT '''
-            uo = User(name=name, 
-                      uid=uid)
-            
-            ''' Additional garbage error checking '''
-            # set password if provided
-            if password is not None:
-                uo.set_password(password)
-            # convert to date type
-            if dob is not None:
-                try:
-                    uo.dob = datetime.strptime(dob, '%Y-%m-%d').date()
-                except:
-                    return {'message': f'Date of birth format error {dob}, must be mm-dd-yyyy'}, 400
+            uo = User(username=username, 
+                      streak=streak)
             
             ''' #2: Key Code block to add user to database '''
             # create user in database
@@ -52,36 +38,29 @@ class UserAPI:
             if user:
                 return jsonify(user.read())
             # failure returns error
-            return {'message': f'Processed {name}, either a format error or User ID {uid} is duplicate'}, 400
+            return {'message': f'Processed {username}, either a format error or a duplicate'}, 400
 
         def get(self): # Read Method
             users = User.query.all()    # read/extract all users from database
             json_ready = [user.read() for user in users]  # prepare output in json
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
-    
-    class _Security(Resource):
 
-        def post(self):
-            ''' Read data for json body '''
+        def put(self):
+            body = request.get_json() # get the body of the request
+            id = body.get('id')
+            username = body.get('username')
+            streak = body.get('streak') # get the UID (Know what to reference)
+            user = User.query.get(id) # get the player (using the uid in this case)
+            user.update(username=username, streak=streak)
+            return f"{user.read()} Updated"
+
+        def delete(self):
             body = request.get_json()
-            
-            ''' Get Data '''
-            uid = body.get('uid')
-            if uid is None or len(uid) < 2:
-                return {'message': f'User ID is missing, or is less than 2 characters'}, 400
-            password = body.get('password')
-            
-            ''' Find user '''
-            user = User.query.filter_by(_uid=uid).first()
-            if user is None or not user.is_password(password):
-                return {'message': f"Invalid user id or password"}, 400
-            
-            ''' authenticated user '''
-            return jsonify(user.read())
-
-            
+            id = body.get('id')
+            player = User.query.get(id)
+            player.delete()
+            return f"{player.read()} Has been deleted"
 
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
-    api.add_resource(_Security, '/authenticate')
     
