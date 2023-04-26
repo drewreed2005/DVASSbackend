@@ -29,7 +29,7 @@ class User(db.Model):
     # constructor of a User object, initializes the instance variables within object (self)
     def __init__(self, username, streak):
         self._username = username
-        self._score = streak
+        self._streak = streak
 
     # a username getter method, extracts username from object
     @property
