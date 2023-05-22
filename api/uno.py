@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
 
-from model.uno import Uno
+from model.unos import Uno
 
 uno_api = Blueprint('uno_api', __name__,
                    url_prefix='/api/uno')
@@ -23,13 +23,13 @@ class UnoAPI:
             if username is None or len(username) < 1:
                 return {'message': f'Username is missing, or is less than a character'}, 400
             # validate uid
-            streak = body.get('streak')
-            if streak is None or streak < 1:
-                return {'message': f'Streak is missing, or is less than 1'}, 400
+            seconds = body.get('seconds')
+            if seconds is None or seconds < 1:
+                return {'message': f'Seconds is missing, or is less than 1'}, 400
 
             ''' #1: Key code block, setup USER OBJECT '''
             uo = Uno(username=username, 
-                      streak=streak)
+                      seconds=seconds)
             
             ''' #2: Key Code block to add user to database '''
             # create user in database
@@ -51,9 +51,9 @@ class UnoAPI:
             body = request.get_json() # get the body of the request
             id = body.get('id')
             username = body.get('username')
-            streak = body.get('streak') # get the UID (Know what to reference)
+            seconds = body.get('seconds') # get the UID (Know what to reference)
             user = Uno.query.get(id) # get the player (using the uid in this case)
-            user.update(username=username, streak=streak)
+            user.update(username=username, seconds=seconds)
             return f"{user.read()} Updated"
 
     class _Delete(Resource):

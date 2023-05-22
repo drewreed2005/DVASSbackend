@@ -24,12 +24,12 @@ class Uno(db.Model):
     # Define the User schema with "vars" from object
     id = db.Column(db.Integer, primary_key=True)
     _username = db.Column(db.String(255), unique=False, nullable=False)
-    _streak = db.Column(db.Integer, unique=True, nullable=False)
+    _seconds = db.Column(db.Integer, unique=True, nullable=False)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, username, streak):
+    def __init__(self, username, seconds):
         self._username = username
-        self._streak = streak
+        self._seconds = seconds
 
     # a username getter method, extracts username from object
     @property
@@ -43,13 +43,13 @@ class Uno(db.Model):
     
     # a getter method, extracts streak from object
     @property
-    def streak(self):
-        return self._streak
+    def seconds(self):
+        return self._seconds
     
     # a setter function, allows streak to be updated after initial object creation
-    @streak.setter
-    def streak(self, streak):
-        self._streak = streak
+    @seconds.setter
+    def seconds(self, seconds):
+        self._seconds = seconds
     
     # output content using str(object) in human readable form, uses getter
     # output content using json dumps, this is ready for API response
@@ -74,17 +74,17 @@ class Uno(db.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "streak": self.streak
+            "seconds": self.seconds
         }
 
     # CRUD update: updates user name, password, phone
     # returns self
-    def update(self, username, streak):
+    def update(self, username, seconds):
         """only updates values with length"""
         if len(username) > 0:
             self.username = username
-        if streak > 0:
-            self.streak = streak
+        if seconds > 0:
+            self.seconds = seconds
         db.session.commit()
         return self
 
@@ -104,13 +104,13 @@ def initUno():
         """Create database and tables"""
         db.create_all()
         """Tester data for table"""
-        u1 = Uno(username="Mr. Cards", streak=5)
-        u2 = Uno(username="Kard Kowntre", streak=10)
-        u3 = Uno(username="Un Bea Table", streak=15)
+        u1 = Uno(username="Mr. Cards", seconds=54)
+        u2 = Uno(username="Kard Kowntre", seconds=39)
+        u3 = Uno(username="Un Bea Table", seconds=28)
 
         users = [u1, u2, u3]
 
-        """Builds sample user/note(s) data"""
+        """Builds sample user data"""
         for user in users:
             try:
                 user.create()

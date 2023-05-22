@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
 
-from model.war import War
+from model.wars import War
 
 war_api = Blueprint('war_api', __name__,
                    url_prefix='/api/war')

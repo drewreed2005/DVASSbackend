@@ -18,8 +18,8 @@ from sqlalchemy.exc import IntegrityError
 # -- a.) db.Model is like an inner layer of the onion in ORM
 # -- b.) User represents data we want to store, something that is built on db.Model
 # -- c.) SQLAlchemy ORM is layer on top of SQLAlchemy Core, then SQLAlchemy engine, SQL
-class Uno(db.Model):
-    __tablename__ = 'uno'  # table name is plural, class name is singular
+class War(db.Model):
+    __tablename__ = 'war'  # table name is plural, class name is singular
 
     # Define the User schema with "vars" from object
     id = db.Column(db.Integer, primary_key=True)
@@ -99,14 +99,14 @@ class Uno(db.Model):
 """Database Creation and Testing """
 
 # Builds working data for testing
-def initUno():
+def initWar():
     with app.app_context():
         """Create database and tables"""
         db.create_all()
         """Tester data for table"""
-        u1 = Uno(username="Mr. Cards", streak=5)
-        u2 = Uno(username="Kard Kowntre", streak=10)
-        u3 = Uno(username="Un Bea Table", streak=15)
+        u1 = War(username="Mr. Cards", streak=5)
+        u2 = War(username="Kard Kowntre", streak=10)
+        u3 = War(username="Un Bea Table", streak=15)
 
         users = [u1, u2, u3]
 
