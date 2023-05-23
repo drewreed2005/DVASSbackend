@@ -104,9 +104,9 @@ def initBlackjack():
         """Create database and tables"""
         db.create_all()
         """Tester data for table"""
-        u1 = Blackjack(username="Mr. Cards", streak=5)
-        u2 = Blackjack(username="Kard Kowntre", streak=10)
-        u3 = Blackjack(username="Un Bea Table", streak=15)
+        u1 = Blackjack(username="Mr. Cards", streak=3)
+        u2 = Blackjack(username="Kard Kowntre", streak=4)
+        u3 = Blackjack(username="Un Bea Table", streak=5)
 
         users = [u1, u2, u3]
 
