@@ -11,6 +11,22 @@ blackjack_api = Blueprint('blackjack_api', __name__,
 # API docs https://flask-restful.readthedocs.io/en/latest/api.html
 api = Api(blackjack_api)
 
+# bubble sorts a list of dictionaries, base off of provided key
+def bubbleSort(list, key, descending):
+    n = len(list) - 1
+    for i in range(n):
+        swapped = False 
+        for j in range(n-i):
+            N = list[j].get(key)
+            N1 = list[j+1].get(key)
+            if N > N1:
+                swapped = True
+                list[j], list[j + 1] = list[j + 1], list[j]
+        if not swapped:
+            if descending:
+                list.reverse()
+            return
+
 class BlackjackAPI:        
     class _Create(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def post(self): # Create method
@@ -44,6 +60,7 @@ class BlackjackAPI:
         def get(self): # Read Method
             users = Blackjack.query.all()    # read/extract all users from database
             json_ready = [user.read() for user in users]  # prepare output in json
+            bubbleSort(json_ready, "streak", True)
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
 
     class _Update(Resource):
