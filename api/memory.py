@@ -11,6 +11,17 @@ memory_api = Blueprint('memory_api', __name__,
 # API docs https://flask-restful.readthedocs.io/en/latest/api.html
 api = Api(memory_api)
 
+# using insertion sort to sort the memory times
+def insertion_sort(list, key):
+    for i in range(1, len(list)):
+        current = list[i]
+        j = i - 1
+        while j >= 0 and current[key] < list[j][key]:
+            list[j + 1] = list[j]
+            j -= 1
+        list[j + 1] = current
+    return list
+
 class MemoryAPI:        
     class _Create(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def post(self): # Create method
@@ -44,6 +55,7 @@ class MemoryAPI:
         def get(self): # Read Method
             users = Memory.query.all()    # read/extract all users from database
             json_ready = [user.read() for user in users]  # prepare output in json
+            json_ready = insertion_sort(json_ready, "seconds")
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
 
     class _Update(Resource):
