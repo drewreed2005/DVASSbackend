@@ -11,6 +11,30 @@ uno_api = Blueprint('uno_api', __name__,
 # API docs https://flask-restful.readthedocs.io/en/latest/api.html
 api = Api(uno_api)
 
+def merge_sort(list, key):
+    if len(list) <= 1:
+        return list
+    mid = len(list) // 2
+    left_half = list[:mid]
+    right_half = list[mid:]
+    left_sorted = merge_sort(left_half, key)
+    right_sorted = merge_sort(right_half, key)
+    return merge(left_sorted, right_sorted, key)
+
+def merge(left, right, key):
+    merged = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i][key] <= right[j][key]:
+            merged.append(left[i])
+            i += 1
+        else:
+            merged.append(right[j])
+            j += 1
+    merged.extend(left[i:])
+    merged.extend(right[j:])
+    return merged
+
 class UnoAPI:        
     class _Create(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def post(self): # Create method
@@ -44,6 +68,7 @@ class UnoAPI:
         def get(self): # Read Method
             users = Uno.query.all()    # read/extract all users from database
             json_ready = [user.read() for user in users]  # prepare output in json
+            json_ready = merge_sort(json_ready, "seconds")
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
 
     class _Update(Resource):
