@@ -11,6 +11,18 @@ war_api = Blueprint('war_api', __name__,
 # API docs https://flask-restful.readthedocs.io/en/latest/api.html
 api = Api(war_api)
 
+def selection_sort(list, key, descending):
+    for i in range(len(list)):
+        min_index = i
+        for j in range(i + 1, len(list)):
+            if list[j][key] < list[min_index][key]:
+                min_index = j
+        if min_index != i:
+            list[i], list[min_index] = list[min_index], list[i]
+    if descending:
+        list.reverse()
+    return list
+
 class WarAPI:        
     class _Create(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def post(self): # Create method
@@ -44,6 +56,7 @@ class WarAPI:
         def get(self): # Read Method
             users = War.query.all()    # read/extract all users from database
             json_ready = [user.read() for user in users]  # prepare output in json
+            json_ready = selection_sort(json_ready, "streak", True)
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
 
     class _Update(Resource):
