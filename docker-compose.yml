@@ -1,11 +1,17 @@
 version: '3'
 services:
         web:
-                image: dvass_port_v1 
+                image: dvass_port_v1
                 build: .
                 ports:
-                        - "8452:8452"  
+                        - "8452:8080"
                 volumes:
-                        - ./volumes:/volumes
-                        - ./instance:/instance
+                        - persistent_volume:/app/volumes
                 restart: unless-stopped
+volumes:
+  persistent_volume:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ubuntu/T8452_DVASS/volumes
