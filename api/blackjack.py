@@ -12,7 +12,7 @@ blackjack_api = Blueprint('blackjack_api', __name__,
 api = Api(blackjack_api)
 
 # bubble sorts a list of dictionaries, base off of provided key
-def bubbleSort(list, key, descending):
+def bubbleSort(list, key):
     n = len(list) - 1
     for i in range(n):
         swapped = False 
@@ -23,8 +23,6 @@ def bubbleSort(list, key, descending):
                 swapped = True
                 list[j], list[j + 1] = list[j + 1], list[j]
         if not swapped:
-            if descending:
-                list.reverse()
             return
 
 class BlackjackAPI:        
@@ -60,7 +58,8 @@ class BlackjackAPI:
         def get(self): # Read Method
             users = Blackjack.query.all()    # read/extract all users from database
             json_ready = [user.read() for user in users]  # prepare output in json
-            bubbleSort(json_ready, "streak", True)
+            bubbleSort(json_ready, "streak")
+            json_ready.reverse()
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
 
     class _Update(Resource):
