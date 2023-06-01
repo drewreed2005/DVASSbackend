@@ -24,7 +24,7 @@ class Blackjack(db.Model):
     # Define the User schema with "vars" from object
     id = db.Column(db.Integer, primary_key=True)
     _username = db.Column(db.String(255), unique=False, nullable=False)
-    _streak = db.Column(db.Integer, unique=True, nullable=False)
+    _streak = db.Column(db.Integer, unique=False, nullable=False)
 
     # constructor of a User object, initializes the instance variables within object (self)
     def __init__(self, username, streak):
